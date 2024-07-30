@@ -11,7 +11,7 @@ ProAffinity++ extract features from protein sequence and structure information, 
 Please follow these steps:
 1. clone this rep
 ```bash
-git clone 
+git clone git@github.com:JianquanZhao/BindingAffinity.git
 ```
 
 2. create the environment
