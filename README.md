@@ -24,8 +24,10 @@ conda env create -f environment.yml
 3. install esm package
 
 ```bash
+# install sepcial required packages from special source
 conda activate PPA_Pred
-pip install fair-esm
+pip install git+https://github.com/facebookresearch/esm.git
+pip install torch-cluster -f https://data.pyg.org/whl/torch-1.12.0+10.2.html
 ```
 4. download the esm1v model and the esm-inversefolding model
 ```bash
