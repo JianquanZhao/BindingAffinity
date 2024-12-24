@@ -80,7 +80,6 @@ def get_complex_mols(args):
         mutation = None
     else:
         mutation = contents[-1].split('+')
-    # print(pdb_name, mols, mutation)
     return pdb_name, mols, mutation
 
 def generate_graph(args):
@@ -98,7 +97,6 @@ def generate_graph(args):
         with open(graph_file,'wb') as f:
             graph_dict = {"seq":seq, "interfaceDict":interfaceDict, "connect":connect, "dis":dis, "pos":pos}
             pickle.dump(graph_dict, f)
-    # print(graph_dict)
     return graph_dict
 
 @torch.no_grad()
@@ -129,12 +127,13 @@ def get_sequence_embedding(args, seq):
                 for i in range(len(s)):
                     batch_tokens_masked = batch_tokens.clone()
                     batch_tokens_masked[0][i+1]=alphabet.mask_idx  #mask the residue,32
-                    x = esm1v_model(batch_tokens_masked.to(args.esm1v_device))
+                    x = esm1v_model(batch_tokens_masked.to(args.esm1v_device), repr_layers = [33])['representations'][33]
+                    # B = 0, T = i + 1
                     res.append(x[0][i+1].tolist())
             sequence_embedding[k] = F.avg_pool1d(torch.tensor(res), 40, 40).cpu()
             logging.info('Finish esm1v\'s embedding : '+k)
         except Exception:
-            print("Pdb imformation not clear :"+k)
+            logging.error("Pdb imformation not clear :"+k)
 
     return sequence_embedding
 
@@ -143,7 +142,7 @@ def get_structure_embedding(args, chain_list):
     logging.info("Loading esm1v model...")
 
     esmif_model, alphabet = esm.pretrained.load_model_and_alphabet(args.esmif_model)
-    esmif_model = esmif_model.eval().to(args.esmif_device)    
+    esmif_model = esmif_model.eval().to(args.esmif_device)
 
     logging.info("Esmif_model loaded")
 
@@ -153,9 +152,11 @@ def get_structure_embedding(args, chain_list):
 
     # get the structure embedding
     try:
-        structure_embedding = {chain:F.avg_pool1d(esm.inverse_folding.multichain_util.get_encoder_output_for_complex(esmif_model, alphabet, coords, chain, args.esmif_device),16,16).cpu() for chain in chain_list}
+        structure_embedding = {chain:F.avg_pool1d(
+                                                  esm.inverse_folding.multichain_util.get_encoder_output_for_complex(esmif_model, alphabet, coords, chain)
+                                       ,16,16).cpu() for chain in chain_list}
     except Exception:
-        print('Pdb imformation not clear')
+        logging.error('Embedding structure faild')
     return structure_embedding
 
 def get_resdeepth(args):
@@ -239,7 +240,7 @@ def make_chain_pdb(args, chain, chain_pdb_file):
         io.set_structure(structure)
         io.save(chain_pdb_file)
     except Exception:
-        print(f"false chain id :{chain}")
+        logging.error(f"False chain id :{chain}")
         # sys.exit(1)
 
 def get_sidechain_info(args, chain):
@@ -256,7 +257,6 @@ def get_sidechain_info(args, chain):
         center_coord = get_sidechain_center(chain_pdb_file)
         sidechain_info = {"angle":angle, "center_coord":center_coord}
 
-    # print(sidechain_info)
     return sidechain_info
 
 def get_node_features(args):
@@ -269,7 +269,6 @@ def get_node_features(args):
     dssp = getDSSP(args.pdb_file)
     resfeat = getAAOneHotPhys()
 
-    # print(f"rd:{rd}\n dssp:{dssp}\n resfeat:{resfeat}\n")	
     graph_dict = generate_graph(args)
     chain_list = list(graph_dict["interfaceDict"].keys())
 
