@@ -320,7 +320,6 @@ dependencies:
       - dgl-cu102==0.6.1
       - easydict==1.13
       - et-xmlfile==1.1.0
-      - fair-esm==2.0.0
       - filelock==3.12.2
       - huggingface-hub==0.16.4
       - lxml==4.9.4
@@ -329,8 +328,5 @@ dependencies:
       - regex==2023.12.25
       - safetensors==0.4.2
       - tokenizers==0.13.3
-      - torch-cluster==1.6.0+pt112cu102
-      - torch-scatter==2.1.0+pt112cu102
-      - torch-sparse==0.6.15+pt112cu102
       - transformers==4.30.2
 prefix: /mnt/data/xukeyu/miniconda3/envs/PPA_Pred

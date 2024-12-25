@@ -27,7 +27,11 @@ conda env create -f environment.yml
 # install sepcial required packages from special source
 conda activate PPA_Pred
 pip install git+https://github.com/facebookresearch/esm.git
-pip install torch-cluster -f https://data.pyg.org/whl/torch-1.12.0+10.2.html
+CUDA=cu102
+TORCH=1.12.0
+pip install torch-scatter==2.1.0 -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
+pip install torch-cluster==1.6.0 -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
+pip install torch-sparse==0.6.15 -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
 ```
 4. download the esm1v model and the esm-inversefolding model
 ```bash
