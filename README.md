@@ -32,12 +32,23 @@ TORCH=1.12.0
 pip install torch-scatter==2.1.0 -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
 pip install torch-cluster==1.6.0 -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
 pip install torch-sparse==0.6.15 -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
+conda install salilab::dssp
 ```
 4. download the esm1v model and the esm-inversefolding model
 ```bash
 mkdir ckpts
 wget https://dl.fbaipublicfiles.com/fair-esm/models/esm1v_t33_650M_UR90S_1.pt -O ckpts/esm1v_t33_650M_UR90S_1.pt -c
 wget https://dl.fbaipublicfiles.com/fair-esm/models/esm_if1_gvp4_t16_142M_UR50.pt -O ckpts/esm_if1_gvp4_t16_142M_UR50.pt -c 
+```
+5. config excutable msms 
+```
+# step1: download from https://ccsb.scripps.edu/msms/downloads/
+# step2: unzip download tar.gz fie
+tar xfzv msms_i86_64Linux2_2.6.1.tar.gz
+# step3: config path
+cp msms.x86_64Linux2.2.6.1 msms
+MSMS=$(realpath msms)
+echo \$PATH=$MSMS:\$PATH >> ~/.bashrc
 ```
 
 **running your first prediction**
