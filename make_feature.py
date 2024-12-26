@@ -332,8 +332,8 @@ def get_node_features(args):
             if rd is None or res_key not in rd.keys():
                 rd_feat=[0.0,0.0]
             else:
-                rd_feat = [rd[res_key][0] if rd_feat[0] is not None else 0.0,
-                           rd[res_key][1] if rd_feat[1] is not None else 0.0]
+                rd_feat = [rd[res_key][0] if rd[res_key][0] is not None else 0.0,
+                           rd[res_key][1] if rd[res_key][1] is not None else 0.0]
 
             node_features[res]=[chain_sign,
                                resfeat[reduise[0]],
